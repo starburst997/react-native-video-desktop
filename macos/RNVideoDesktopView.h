@@ -21,6 +21,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onVideoBuffer;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoReadyForDisplay;
 @property (nonatomic, copy) RCTDirectEventBlock onVideoPlaybackStateChanged;
+@property (nonatomic, copy) RCTDirectEventBlock onVideoFrameUpdate;
 
 - (void)seek:(float)time;
 - (void)pause;

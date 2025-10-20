@@ -6,7 +6,7 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
-import type { VideoDesktopProps, OnLoadData, OnProgressData, OnErrorData } from './types';
+import type { VideoDesktopProps, OnLoadData, OnProgressData, OnErrorData, OnFrameUpdateData } from './types';
 
 const COMPONENT_NAME = 'RNVideoDesktop';
 
@@ -18,6 +18,7 @@ interface NativeVideoDesktopProps extends VideoDesktopProps {
   onVideoBuffer?: (event: { nativeEvent: { isBuffering: boolean } }) => void;
   onVideoReadyForDisplay?: (event: any) => void;
   onVideoPlaybackStateChanged?: (event: { nativeEvent: { isPlaying: boolean } }) => void;
+  onVideoFrameUpdate?: (event: { nativeEvent: OnFrameUpdateData }) => void;
 }
 
 const RNVideoDesktopNative =
@@ -32,6 +33,7 @@ const VideoDesktop = React.forwardRef<any, VideoDesktopProps>((props, ref) => {
     onBuffer,
     onReadyForDisplay,
     onPlaybackStateChanged,
+    onFrameUpdate,
     ...restProps
   } = props;
 
@@ -102,6 +104,13 @@ const VideoDesktop = React.forwardRef<any, VideoDesktopProps>((props, ref) => {
     [onPlaybackStateChanged]
   );
 
+  const handleFrameUpdate = useCallback(
+    (event: { nativeEvent: OnFrameUpdateData }) => {
+      onFrameUpdate?.(event.nativeEvent);
+    },
+    [onFrameUpdate]
+  );
+
   return (
     <RNVideoDesktopNative
       ref={nativeRef}
@@ -113,6 +122,7 @@ const VideoDesktop = React.forwardRef<any, VideoDesktopProps>((props, ref) => {
       onVideoBuffer={handleBuffer}
       onVideoReadyForDisplay={handleReadyForDisplay}
       onVideoPlaybackStateChanged={handlePlaybackStateChanged}
+      onVideoFrameUpdate={handleFrameUpdate}
     />
   );
 });

@@ -6,5 +6,6 @@ export type {
   OnLoadData,
   OnProgressData,
   OnErrorData,
+  OnFrameUpdateData,
   ResizeMode,
 } from './types';

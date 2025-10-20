@@ -31,6 +31,21 @@ export interface OnErrorData {
   };
 }
 
+export interface OnFrameUpdateData {
+  viewBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  frameInWindow: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
+
 export interface VideoDesktopProps {
   source: VideoSource;
   style?: ViewStyle;
@@ -57,4 +72,5 @@ export interface VideoDesktopProps {
   onBuffer?: (data: { isBuffering: boolean }) => void;
   onReadyForDisplay?: () => void;
   onPlaybackStateChanged?: (data: { isPlaying: boolean }) => void;
+  onFrameUpdate?: (data: OnFrameUpdateData) => void;
 }

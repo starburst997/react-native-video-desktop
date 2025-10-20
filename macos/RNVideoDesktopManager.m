@@ -30,6 +30,7 @@ RCT_EXPORT_VIEW_PROPERTY(onVideoError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onVideoBuffer, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onVideoReadyForDisplay, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onVideoPlaybackStateChanged, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onVideoFrameUpdate, RCTDirectEventBlock)
 
 // Export commands
 RCT_EXPORT_METHOD(seek:(nonnull NSNumber *)reactTag time:(NSNumber *)time)
