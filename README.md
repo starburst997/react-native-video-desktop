@@ -198,7 +198,7 @@ This library aims to maintain API compatibility with `react-native-video`. Howev
 ### Building
 
 ```bash
-git clone https://github.com/yourusername/react-native-video-desktop.git
+git clone https://github.com/starburst997/react-native-video-desktop.git
 cd react-native-video-desktop
 npm install
 npm run prepare
@@ -244,5 +244,5 @@ MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ## Support
 
-- [Issue Tracker](https://github.com/yourusername/react-native-video-desktop/issues)
-- [Discussions](https://github.com/yourusername/react-native-video-desktop/discussions)
+- [Issue Tracker](https://github.com/starburst997/react-native-video-desktop/issues)
+- [Discussions](https://github.com/starburst997/react-native-video-desktop/discussions)

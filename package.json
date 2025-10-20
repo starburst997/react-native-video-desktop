@@ -1,10 +1,10 @@
 {
   "name": "react-native-video-desktop",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "A video component for React Native macOS/Windows/Linux with a react-native-video compatible API",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
-  "types": "lib/typescript/src/index.d.ts",
+  "types": "lib/typescript/index.d.ts",
   "react-native": "src/index.tsx",
   "source": "src/index.tsx",
   "files": [
@@ -36,14 +36,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/react-native-video-desktop.git"
+    "url": "https://github.com/starburst997/react-native-video-desktop.git"
   },
-  "author": "Your Name <your.email@example.com>",
+  "author": "JD Boivin <jd@boiv.in>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/react-native-video-desktop/issues"
+    "url": "https://github.com/starburst997/react-native-video-desktop/issues"
   },
-  "homepage": "https://github.com/yourusername/react-native-video-desktop#readme",
+  "homepage": "https://github.com/starburst997/react-native-video-desktop#readme",
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
