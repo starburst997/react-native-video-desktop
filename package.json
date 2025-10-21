@@ -43,7 +43,7 @@
   "bugs": {
     "url": "https://github.com/starburst997/react-native-video-desktop/issues"
   },
-  "homepage": "https://github.com/starburst997/react-native-video-desktop#readme",
+  "homepage": "https://react-native-video-desktop.jd.boiv.in",
   "peerDependencies": {
     "react": "*",
     "react-native": "*",

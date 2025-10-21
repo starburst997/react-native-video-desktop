@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      React Native Video Desktop - Video Playback for Desktop Platforms
+    </title>
+    <meta
+      name="description"
+      content="Enable video playback in React Native applications on desktop platforms (Windows, macOS, Linux). Simple, lightweight, and efficient."
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #d0d0d9;
+        background: #0c1018;
+        min-height: 100vh;
+      }
+
+      .hero-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #0c1018 0%, #191923 100%);
+        z-index: -1;
+      }
+
+      .hero-accent {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, #61afff20 0%, transparent 70%);
+        top: -300px;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        padding: 2rem 0;
+        text-align: center;
+      }
+
+      .hero {
+        padding: 4rem 0 6rem;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, #61afff, #98d280);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .tagline {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        color: #96969d;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .btn-primary {
+        background: #61afff;
+        color: #0c1018;
+        border: 1px solid #61afff;
+      }
+
+      .btn-primary:hover {
+        background: #4a9ae8;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 30px rgba(97, 175, 255, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: #d0d0d9;
+        border: 2px solid #3f3f3f;
+      }
+
+      .btn-secondary:hover {
+        background: #32373c;
+        border-color: #636669;
+      }
+
+      .features-section {
+        background: #141518;
+        border-top: 1px solid #3f3f3f;
+        border-bottom: 1px solid #3f3f3f;
+        padding: 5rem 0;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        margin-top: 3rem;
+      }
+
+      .feature {
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: #32373c;
+        border: 1px solid #3f3f3f;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.8rem;
+      }
+
+      .feature h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        color: #61afff;
+      }
+
+      .feature p {
+        color: #96969d;
+        line-height: 1.7;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #d0d0d9;
+        margin-bottom: 1rem;
+      }
+
+      .section-subtitle {
+        text-align: center;
+        color: #96969d;
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .install-section {
+        padding: 4rem 0;
+        background: #0c1018;
+      }
+
+      .code-block {
+        background: #141518;
+        border: 1px solid #3f3f3f;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 2rem auto;
+        max-width: 700px;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.95rem;
+        color: #98d280;
+        overflow-x: auto;
+      }
+
+      .code-block code {
+        display: block;
+        white-space: pre;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin: 2rem auto 0;
+        max-width: 700px;
+        border-bottom: 1px solid #3f3f3f;
+      }
+
+      .tab {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: none;
+        color: #96969d;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-bottom: 2px solid transparent;
+      }
+
+      .tab:hover {
+        color: #d0d0d9;
+      }
+
+      .tab.active {
+        color: #61afff;
+        border-bottom-color: #61afff;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .code-wrapper {
+        position: relative;
+        background: #141518;
+        border: 1px solid #3f3f3f;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 0 auto;
+        max-width: 700px;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.95rem;
+        color: #98d280;
+        overflow-x: auto;
+      }
+
+      .code-wrapper code {
+        display: block;
+        white-space: pre;
+      }
+
+      /* Syntax highlighting */
+      .keyword {
+        color: #e18cf5;
+      }
+      .function {
+        color: #ffe169;
+      }
+      .string {
+        color: #98d280;
+      }
+      .component {
+        color: #61afff;
+      }
+      .property {
+        color: #17bbdd;
+      }
+      .punctuation {
+        color: #d0d0d9;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: #32373c;
+        border: 1px solid #3f3f3f;
+        color: #96969d;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 600;
+      }
+
+      .copy-btn:hover {
+        background: #3f3f3f;
+        color: #d0d0d9;
+      }
+
+      .copy-btn.copied {
+        background: #98d280;
+        color: #0c1018;
+        border-color: #98d280;
+      }
+
+      .disclaimer {
+        background: linear-gradient(135deg, #ffe16920 0%, #e18cf520 100%);
+        border: 1px solid #ffe169;
+        border-left: 4px solid #ffe169;
+        padding: 1rem 1.5rem;
+        margin: 2rem auto;
+        max-width: 900px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .disclaimer-title {
+        color: #ffe169;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .disclaimer-text {
+        color: #d0d0d9;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      .usage-section {
+        background: #191923;
+        padding: 4rem 0;
+        border-top: 1px solid #3f3f3f;
+      }
+
+      footer {
+        background: #0c1018;
+        padding: 3rem 0;
+        text-align: center;
+        color: #96969d;
+        border-top: 1px solid #3f3f3f;
+      }
+
+      footer a {
+        color: #61afff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      footer a:hover {
+        color: #98d280;
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        .tagline {
+          font-size: 1.2rem;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+          gap: 2rem;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero-background">
+      <div class="hero-accent"></div>
+    </div>
+
+    <header>
+      <div class="container">
+        <nav>
+          <a
+            href="https://github.com/starburst997/react-native-video-desktop"
+            class="btn btn-secondary"
+          >
+            View on GitHub →
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <h1>React Native Video Desktop</h1>
+        <p class="tagline">
+          Simple video playback for React Native on desktop platforms (Windows,
+          macOS, Linux)
+        </p>
+
+        <div class="disclaimer">
+          <div class="disclaimer-title">⚠️ Work in Progress</div>
+          <div class="disclaimer-text">
+            This project is currently under development. Only macOS is fully
+            supported at the moment.<br />
+            Windows and Linux support is coming soon.
+          </div>
+        </div>
+
+        <div class="cta-buttons">
+          <a
+            href="https://www.npmjs.com/package/@jdboivin/react-native-video-desktop"
+            class="btn btn-primary"
+          >
+            📦 View on NPM
+          </a>
+          <a
+            href="https://github.com/starburst997/react-native-video-desktop"
+            class="btn btn-secondary"
+          >
+            📖 Documentation
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="container">
+        <h2 class="section-title">Built for Desktop</h2>
+        <p class="section-subtitle">
+          Lightweight and efficient video playback for React Native desktop
+          applications
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">🖥️</div>
+            <h3>Cross-Platform</h3>
+            <p>
+              Works seamlessly on Windows, macOS, and Linux desktop platforms.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3>Simple & Fast</h3>
+            <p>
+              Minimal setup with excellent performance for desktop video
+              playback.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">🎬</div>
+            <h3>Full Control</h3>
+            <p>
+              Complete playback controls including play, pause, seek, and volume
+              management.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="install-section">
+      <div class="container">
+        <h2 class="section-title">Installation</h2>
+        <p class="section-subtitle">Choose your preferred package manager</p>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="pnpm">pnpm</button>
+          <button class="tab" data-tab="npm">npm</button>
+          <button class="tab" data-tab="yarn">yarn</button>
+          <button class="tab" data-tab="bun">bun</button>
+        </div>
+
+        <div class="tab-content active" id="pnpm" style="margin-top: 1.5rem">
+          <div class="code-wrapper">
+            <button
+              class="copy-btn"
+              onclick="copyCode('pnpm add @jdboivin/react-native-video-desktop', this)"
+            >
+              Copy
+            </button>
+            <code>pnpm add @jdboivin/react-native-video-desktop</code>
+          </div>
+        </div>
+
+        <div class="tab-content" id="npm" style="margin-top: 1.5rem">
+          <div class="code-wrapper">
+            <button
+              class="copy-btn"
+              onclick="copyCode('npm install @jdboivin/react-native-video-desktop', this)"
+            >
+              Copy
+            </button>
+            <code>npm install @jdboivin/react-native-video-desktop</code>
+          </div>
+        </div>
+
+        <div class="tab-content" id="yarn" style="margin-top: 1.5rem">
+          <div class="code-wrapper">
+            <button
+              class="copy-btn"
+              onclick="copyCode('yarn add @jdboivin/react-native-video-desktop', this)"
+            >
+              Copy
+            </button>
+            <code>yarn add @jdboivin/react-native-video-desktop</code>
+          </div>
+        </div>
+
+        <div class="tab-content" id="bun" style="margin-top: 1.5rem">
+          <div class="code-wrapper">
+            <button
+              class="copy-btn"
+              onclick="copyCode('bun add @jdboivin/react-native-video-desktop', this)"
+            >
+              Copy
+            </button>
+            <code>bun add @jdboivin/react-native-video-desktop</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="usage-section">
+      <div class="container">
+        <h2 class="section-title">Quick Start</h2>
+        <p class="section-subtitle">
+          Import and use in your React Native desktop application
+        </p>
+
+        <div class="code-wrapper">
+          <button
+            class="copy-btn"
+            onclick="copyCode(`import Video from 'react-native-video-desktop';\n\nfunction App() {\n  return (\n    <Video\n      source={{ uri: 'path/to/video.mp4' }}\n      style={{ width: 640, height: 360 }}\n      controls={true}\n      paused={false}\n    />\n  );\n}`, this)"
+          >
+            Copy
+          </button>
+<code><span class="keyword">import</span> <span class="component">Video</span> <span class="keyword">from</span> <span class="string">'react-native-video-desktop'</span><span class="punctuation">;</span>
+
+<span class="keyword">function</span> <span class="function">App</span><span class="punctuation">() {</span>
+  <span class="keyword">return</span> <span class="punctuation">(</span>
+    <span class="punctuation">&lt;</span><span class="component">Video</span>
+      <span class="property">source</span><span class="punctuation">={{</span> <span class="property">uri</span><span class="punctuation">:</span> <span class="string">'path/to/video.mp4'</span> <span class="punctuation">}}</span>
+      <span class="property">style</span><span class="punctuation">={{</span> <span class="property">width</span><span class="punctuation">:</span> 640<span class="punctuation">,</span> <span class="property">height</span><span class="punctuation">:</span> 360 <span class="punctuation">}}</span>
+      <span class="property">controls</span><span class="punctuation">={</span><span class="keyword">true</span><span class="punctuation">}</span>
+      <span class="property">paused</span><span class="punctuation">={</span><span class="keyword">false</span><span class="punctuation">}</span>
+    <span class="punctuation">/&gt;</span>
+  <span class="punctuation">);</span>
+<span class="punctuation">}</span></code>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p>
+          <a href="https://github.com/starburst997/react-native-video-desktop"
+            >GitHub</a
+          >
+          •
+          <a
+            href="https://github.com/starburst997/react-native-video-desktop/issues"
+            >Issues</a
+          >
+          •
+          <a href="https://www.npmjs.com/package/react-native-video-desktop"
+            >NPM</a
+          >
+        </p>
+        <p style="margin-top: 1rem; color: #636669">
+          Made for React Native Desktop
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Tab switching
+      document.querySelectorAll(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const tabName = tab.getAttribute("data-tab")
+
+          // Update active tab
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"))
+          tab.classList.add("active")
+
+          // Update active content
+          document.querySelectorAll(".tab-content").forEach((content) => {
+            content.classList.remove("active")
+          })
+          document.getElementById(tabName).classList.add("active")
+        })
+      })
+
+      // Copy to clipboard
+      function copyCode(text, button) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            button.textContent = "Copied!"
+            button.classList.add("copied")
+
+            setTimeout(() => {
+              button.textContent = "Copy"
+              button.classList.remove("copied")
+            }, 2000)
+          })
+          .catch((err) => {
+            console.error("Failed to copy:", err)
+          })
+      }
+    </script>
+  </body>
+</html>
