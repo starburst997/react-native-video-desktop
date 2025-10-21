@@ -39,107 +39,52 @@
   _controls = NO;
   _resizeMode = @"contain";
 
-  // Create a FIXED SIZE dedicated container view for video (400x300)
-  self.videoContainerView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
-  self.videoContainerView.wantsLayer = YES;
-  self.videoContainerView.layer.backgroundColor = [[NSColor clearColor] CGColor];
+  // Make sure this view has a layer
+  self.wantsLayer = YES;
 
-  // Create player layer with FIXED SIZE filling the container
+  // Create player layer that will be added directly to our view's layer
   self.playerLayer = [AVPlayerLayer layer];
-  self.playerLayer.frame = NSMakeRect(0, 0, 400, 300);
-  self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
   self.playerLayer.player = self.player;
+  self.playerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
   self.playerLayer.backgroundColor = [[NSColor clearColor] CGColor];
-  [self.videoContainerView.layer addSublayer:self.playerLayer];
 
-  // Create TEST container with FIXED position and size
-  self.testContainerView = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 400, 300)];
-  self.testContainerView.wantsLayer = YES;
-  self.testContainerView.layer.backgroundColor = [[NSColor greenColor] CGColor];
-
-  // Create TEST player layer
-  self.testPlayerLayer = [AVPlayerLayer layer];
-  self.testPlayerLayer.frame = NSMakeRect(0, 0, 400, 300);
-  self.testPlayerLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-  self.testPlayerLayer.player = self.player;
-  self.testPlayerLayer.backgroundColor = [[NSColor redColor] CGColor];
-  [self.testContainerView.layer addSublayer:self.testPlayerLayer];
-
-  // Don't add as subview yet - wait for viewDidMoveToWindow
+  // Add player layer to our view's layer
+  [self.layer addSublayer:self.playerLayer];
 }
 
 - (void)viewDidMoveToWindow
 {
   [super viewDidMoveToWindow];
 
-  if (self.window && self.videoContainerView.superview == nil) {
-    NSView *contentView = self.window.contentView;
-
-    // Add dynamic container to window's content view
-    [contentView addSubview:self.videoContainerView positioned:NSWindowAbove relativeTo:nil];
-
-    // Add TEST container with FIXED position
-    self.testContainerView.frame = NSMakeRect(50, 50, 400, 300);
-    [contentView addSubview:self.testContainerView positioned:NSWindowAbove relativeTo:nil];
-
-    // Update position and size to match our view
-    [self updateVideoContainerFrame];
+  // Update layer frame when added to window
+  if (self.window) {
+    [self updateVideoLayerFrame];
   }
 }
 
-- (void)updateVideoContainerFrame
+- (void)updateVideoLayerFrame
 {
-  NSLog(@"[RNVideoDesktop] updateVideoContainerFrame called - bounds: %@, window: %@", NSStringFromRect(self.bounds), self.window ? @"YES" : @"NO");
+  NSLog(@"[RNVideoDesktop] updateVideoLayerFrame called - bounds: %@", NSStringFromRect(self.bounds));
 
-  if (!self.window || !self.videoContainerView) {
-    NSLog(@"[RNVideoDesktop] Early return - window or container is nil");
+  if (!self.playerLayer) {
     return;
   }
 
-  // Convert our frame to window coordinates
-  NSRect frameInWindow = [self convertRect:self.bounds toView:nil];
+  // Simply make the player layer fill our view's bounds
+  [CATransaction begin];
+  [CATransaction setDisableActions:YES];
+  self.playerLayer.frame = self.bounds;
+  [CATransaction commit];
 
-  NSLog(@"[RNVideoDesktop] Frame in window: %@", NSStringFromRect(frameInWindow));
-
-  // Send frame update event for debugging
-  if (self.onVideoFrameUpdate) {
-    NSLog(@"[RNVideoDesktop] Sending frame update event");
-    self.onVideoFrameUpdate(@{
-      @"viewBounds": @{
-        @"x": @(self.bounds.origin.x),
-        @"y": @(self.bounds.origin.y),
-        @"width": @(self.bounds.size.width),
-        @"height": @(self.bounds.size.height)
-      },
-      @"frameInWindow": @{
-        @"x": @(frameInWindow.origin.x),
-        @"y": @(frameInWindow.origin.y),
-        @"width": @(frameInWindow.size.width),
-        @"height": @(frameInWindow.size.height)
-      }
-    });
-  } else {
-    NSLog(@"[RNVideoDesktop] onVideoFrameUpdate is nil!");
-  }
-
-  // Update video container frame
-  self.videoContainerView.frame = frameInWindow;
-
-  // Update player layer to match container bounds
-  if (self.playerLayer) {
-    [CATransaction begin];
-    [CATransaction setDisableActions:YES];
-    self.playerLayer.frame = self.videoContainerView.bounds;
-    [CATransaction commit];
-  }
+  NSLog(@"[RNVideoDesktop] Updated player layer frame to: %@", NSStringFromRect(self.playerLayer.frame));
 }
 
 - (void)layout
 {
   [super layout];
 
-  // Update video container whenever our layout changes
-  [self updateVideoContainerFrame];
+  // Update player layer whenever our layout changes
+  [self updateVideoLayerFrame];
 }
 
 // Override to prevent React Native from setting background color
@@ -312,7 +257,7 @@
           self.onVideoReadyForDisplay(@{});
         }
         // Trigger frame update when video is ready
-        [self updateVideoContainerFrame];
+        [self updateVideoLayerFrame];
         break;
 
       case AVPlayerItemStatusFailed:
