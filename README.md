@@ -2,7 +2,7 @@
 
 A video component for React Native desktop platforms (macOS, Windows, Linux) with a `react-native-video` compatible API.
 
-[![npm version](https://badge.fury.io/js/@jdboivin/react-native-video-desktop.svg)](https://badge.fury.io/js/@jdboivin/react-native-video-desktop)
+[![npm version](https://badge.fury.io/js/%40jdboivin%2Freact-native-video-desktop.svg)](https://badge.fury.io/js/%40jdboivin%2Freact-native-video-desktop)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
@@ -30,11 +30,11 @@ A video component for React Native desktop platforms (macOS, Windows, Linux) wit
 ## Installation
 
 ```bash
-npm install react-native-video-desktop
+npm install @jdboivin/react-native-video-desktop
 # or
-yarn add react-native-video-desktop
+yarn add @jdboivin/react-native-video-desktop
 # or
-pnpm add react-native-video-desktop
+pnpm add @jdboivin/react-native-video-desktop
 ```
 
 ### macOS
@@ -66,7 +66,7 @@ _Coming soon_
 ```tsx
 import React from "react"
 import { View, StyleSheet } from "react-native"
-import Video from "react-native-video-desktop"
+import Video from "@jdboivin/react-native-video-desktop"
 
 function App() {
   return (
