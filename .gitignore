@@ -43,3 +43,5 @@ example/node_modules/
 example/lib/
 example/macos/Pods/
 example/macos/build/
+
+macos_

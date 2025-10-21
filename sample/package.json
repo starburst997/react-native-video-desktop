@@ -1,0 +1,35 @@
+{
+  "name": "react-native-video-desktop-sample",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-native start --reset-cache",
+    "macos": "react-native run-macos",
+    "init:macos": "react-native-macos-init",
+    "pods:macos": "cd macos && bundle exec pod install",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "clean": "rm -rf macos/build macos/Pods node_modules",
+    "build": "bundle exec fastlane mac test_build",
+    "build:signed": "bundle exec fastlane mac release",
+    "sync:certs": "bundle exec fastlane mac sync_certificates"
+  },
+  "dependencies": {
+    "react": "19.0.0",
+    "react-native": "0.78.3",
+    "react-native-macos": "^0.78.6",
+    "@jdboivin/react-native-video-desktop": "latest"
+  },
+  "devDependencies": {
+    "@react-native-community/cli": "15.0.1",
+    "@react-native-community/cli-platform-android": "15.0.1",
+    "@react-native-community/cli-platform-ios": "15.0.1",
+    "@react-native/babel-preset": "0.78.3",
+    "@react-native/eslint-config": "0.78.3",
+    "@react-native/metro-config": "0.78.3",
+    "@react-native/typescript-config": "0.78.3",
+    "@babel/core": "^7.25.2",
+    "@babel/runtime": "^7.25.0",
+    "typescript": "^5.6.0"
+  }
+}

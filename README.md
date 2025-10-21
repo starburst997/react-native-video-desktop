@@ -165,9 +165,26 @@ source: {
 }
 ```
 
-## Example
+## Sample App
 
-See the [example](./example) directory for a complete working example.
+A complete sample macOS app is available in the [sample](./sample) directory. This demonstrates all features and serves as a reference implementation.
+
+To run the sample app:
+
+```bash
+cd sample
+npm install
+npm run pods:macos
+npm run macos
+```
+
+The sample app includes:
+- Video playback with event logging
+- All event handlers demonstrated
+- Seek functionality
+- Production build scripts (unsigned and signed)
+
+See [sample/README.md](./sample/README.md) for more details.
 
 ## API Compatibility
 
@@ -186,6 +203,43 @@ This library aims to maintain API compatibility with `react-native-video`. Howev
 | Picture-in-Picture | ⏳    | 🚧      | 🚧    |
 
 **Legend:** ✅ Implemented | 🚧 Planned | ⏳ Under consideration
+
+## Building and Code Signing
+
+### Building the Sample App
+
+The sample app uses **Fastlane** for building and code signing:
+
+**Unsigned Build** (for testing):
+```bash
+cd sample
+bundle install
+bundle exec fastlane mac test_build
+```
+
+**Signed Build with Fastlane Match** (for distribution):
+```bash
+cd sample
+bundle install
+bundle exec fastlane mac release
+```
+
+### Code Signing with Fastlane Match
+
+This project uses Fastlane Match for code signing, which:
+- ✅ Stores certificates in a git repository
+- ✅ Syncs across team members and CI/CD
+- ✅ Eliminates manual certificate management
+
+See [docs/CODE_SIGNING_FASTLANE.md](./docs/CODE_SIGNING_FASTLANE.md) for complete setup instructions.
+
+### CI/CD
+
+The GitHub Actions workflow automatically builds and signs the sample app on every release:
+
+1. Set up Fastlane Match following [docs/CODE_SIGNING_FASTLANE.md](./docs/CODE_SIGNING_FASTLANE.md)
+2. Configure GitHub secrets (Match repo URL, SSH key, passwords)
+3. Push to main - workflow automatically uses signed builds if Match is configured
 
 ## Development
 
