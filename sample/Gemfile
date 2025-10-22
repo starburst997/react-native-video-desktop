@@ -1,7 +1,0 @@
-source "https://rubygems.org"
-
-# Require Ruby 2.7 or higher for compatibility
-ruby '>= 2.7.0'
-
-gem "fastlane"
-gem "cocoapods"
