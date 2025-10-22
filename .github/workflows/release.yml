@@ -68,12 +68,6 @@ jobs:
         with:
           git-push: false
 
-      - name: Download macOS artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-sample
-          path: sample/dist
-
       - name: Manage Deployment
         uses: starburst997/deployment-actions@v1
         with:
@@ -84,6 +78,12 @@ jobs:
         uses: starburst997/npm-publish@v1
         with:
           version: ${{ steps.version.outputs.version }}
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-sample
+          path: sample/dist
 
       - name: Generate changelog and create release
         uses: starburst997/commits-logs@v1
