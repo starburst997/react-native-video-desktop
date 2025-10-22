@@ -35,16 +35,11 @@ jobs:
           git-push: false
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+        uses: starburst997/setup-ruby@jd
         with:
-          ruby-version: "3.0"
-          bundler-cache: false
-
-      - name: Setup Fastlane Match SSH Key
-        if: ${{ secrets.MATCH_GIT_URL != '' }}
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.MATCH_SSH_PRIVATE_KEY }}
+          ruby-version: 3.2
+          bundler-cache: true
+          add-platform: true
 
       - name: Install Bundler Dependencies
         run: |
@@ -56,25 +51,38 @@ jobs:
           cd sample
           npm install
 
-      - name: Build Sample App (Signed with Fastlane Match)
-        if: ${{ secrets.MATCH_GIT_URL != '' }}
+      - name: Build Sample App
         env:
-          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_CONNECT_EMAIL: ${{ secrets.APPLE_CONNECT_EMAIL }}
+          APPLE_DEVELOPER_EMAIL: ${{ secrets.APPLE_DEVELOPER_EMAIL }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          FASTLANE_USER: ${{ secrets.APPLE_ID }}
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
-        run: |
-          cd sample
-          bundle exec fastlane mac release
 
-      - name: Build Sample App (Unsigned)
-        if: ${{ secrets.MATCH_GIT_URL == '' }}
+          MATCH_REPOSITORY: ${{ secrets.MATCH_REPOSITORY }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_DEPLOY_KEY: ${{ secrets.MATCH_DEPLOY_KEY }}
+
+          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          APPSTORE_P8: ${{ secrets.APPSTORE_P8 }}
+
+          MAC_BUNDLE_ID: "jd.boiv.in.react-native-video-desktop-sample"
+        shell: bash
         run: |
           cd sample
-          bundle exec fastlane mac test_build
+          if [ -n "$MATCH_REPOSITORY" ]; then
+            # Build signed with Match
+            eval "$(ssh-agent -s)"
+            ssh-add - <<< "${MATCH_DEPLOY_KEY}"
+            bundle exec fastlane mac build_signed
+          else
+            # Build unsigned for testing
+            bundle exec fastlane mac build_unsigned
+          fi
+
+      - name: Create ZIP for distribution
+        working-directory: sample/dist
+        run: |
+          zip -r react-native-video-desktop-sample-macOS.zip react-native-video-desktop-sample.app
 
       - name: Manage Deployment
         uses: starburst997/deployment-actions@v1
