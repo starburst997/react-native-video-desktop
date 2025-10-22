@@ -18,25 +18,19 @@ platform :mac do
       type: "developer_id",
       storage_mode: "git",
       git_url: "git@github.com:#{match_org}/#{match_repo}.git",
-      app_identifier: ENV["MAC_BUNDLE_ID"],
-      platform: "macos"
+      app_identifier: ENV["MAC_BUNDLE_ID"]
     )
   end
 
   desc "Build unsigned app for testing"
   lane :build_unsigned do
-    cocoapods(
-      podfile: "macos/Podfile"
-    )
-
     build_mac_app(
-      workspace: "macos/react-native-video-desktop-sample.xcworkspace",
+      project: "macos/react-native-video-desktop-sample.xcodeproj",
       scheme: "react-native-video-desktop-sample-macOS",
       configuration: "Release",
       output_directory: "dist",
       output_name: "react-native-video-desktop-sample",
       export_method: "mac-application",
-      skip_package_ipa: true,
       codesigning_identity: "",
       skip_codesign: true
     )
@@ -47,10 +41,6 @@ platform :mac do
     setup_ci
 
     sync_certificates
-
-    cocoapods(
-      podfile: "macos/Podfile"
-    )
 
     # Unity has specific requirements around codesigning that we have to handle
     # See https://github.com/fastlane/fastlane/discussions/17458 for context
@@ -71,16 +61,13 @@ platform :mac do
     )
 
     build_mac_app(
-      workspace: "macos/react-native-video-desktop-sample.xcworkspace",
-      scheme: "react-native-video-desktop-sample-macOS",
-      configuration: "Release",
+      export_method: 'developer-id',
+      project: "macos/react-native-video-desktop-sample.xcodeproj",
       output_directory: "dist",
       output_name: "react-native-video-desktop-sample",
-      export_method: "developer-id",
-      skip_package_ipa: true,
+      scheme: "react-native-video-desktop-sample-macOS",
       xcargs: '-allowProvisioningUpdates',
       export_options: {
-        method: "developer-id",
         provisioningProfiles: {
           ENV["MAC_BUNDLE_ID"] => ENV["sigh_#{ENV['MAC_BUNDLE_ID']}_developer_id_macos_profile-name"]
         }

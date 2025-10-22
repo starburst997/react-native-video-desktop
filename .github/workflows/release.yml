@@ -51,6 +51,11 @@ jobs:
           cd sample
           npm install
 
+      - name: Install CocoaPods Dependencies
+        run: |
+          cd sample/macos
+          pod install
+
       - name: Build Sample App
         env:
           APPLE_CONNECT_EMAIL: ${{ secrets.APPLE_CONNECT_EMAIL }}
