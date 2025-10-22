@@ -34,92 +34,27 @@ jobs:
         with:
           git-push: false
 
-      - name: Setup Node.js (root)
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Setup Ruby
-        uses: starburst997/setup-ruby@jd
-        with:
-          ruby-version: 3.2
-          bundler-cache: true
-          add-platform: true
-
-      - name: Install Bundler Dependencies
-        run: |
-          cd sample
-          bundle install
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: sample/package-lock.json
-
-      - name: Install npm Dependencies
-        run: |
-          cd sample
-          npm ci
-
-      - name: Cache CocoaPods
-        uses: actions/cache@v4
-        with:
-          path: |
-            sample/macos/Pods
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: ${{ runner.os }}-pods-${{ hashFiles('sample/macos/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
-
-      - name: Install CocoaPods Dependencies
-        run: |
-          cd sample/macos
-          pod install
-
-      - name: Cache Xcode DerivedData
-        uses: actions/cache@v4
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-xcode-${{ hashFiles('sample/macos/**/*.xcodeproj/project.pbxproj', 'sample/macos/**/*.xcworkspace/contents.xcworkspacedata', 'sample/macos/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-xcode-
-
       - name: Build Sample App
-        env:
-          APPLE_CONNECT_EMAIL: ${{ secrets.APPLE_CONNECT_EMAIL }}
-          APPLE_DEVELOPER_EMAIL: ${{ secrets.APPLE_DEVELOPER_EMAIL }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
-          MATCH_REPOSITORY: ${{ secrets.MATCH_REPOSITORY }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_DEPLOY_KEY: ${{ secrets.MATCH_DEPLOY_KEY }}
-
-          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
-          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
-          APPSTORE_P8: ${{ secrets.APPSTORE_P8 }}
-
-          MAC_BUNDLE_ID: "jd.boiv.in.react-native-video-desktop-sample"
-        shell: bash
-        run: |
-          cd sample
-          if [ -n "$MATCH_REPOSITORY" ]; then
-            # Build signed with Match
-            eval "$(ssh-agent -s)"
-            ssh-add - <<< "${MATCH_DEPLOY_KEY}"
-            bundle exec fastlane mac build_signed
-          else
-            # Build unsigned for testing
-            bundle exec fastlane mac build_unsigned
-          fi
-
-      - name: Create ZIP for distribution
-        working-directory: sample/dist
-        run: |
-          zip -r react-native-video-desktop-sample-macOS.zip react-native-video-desktop-sample.app
+        uses: starburst997/build-macos@v1
+        with:
+          working_directory: "sample"
+          workspace_path: "macos/react-native-video-desktop-sample.xcworkspace"
+          project_path: "macos/react-native-video-desktop-sample.xcodeproj"
+          scheme: "react-native-video-desktop-sample-macOS"
+          output_name: "react-native-video-desktop-sample"
+          mac_bundle_id: "jd.boiv.in.react-native-video-desktop-sample"
+          build_signed: ${{ secrets.MATCH_REPOSITORY != '' }}
+          create_zip: true
+          zip_name: "react-native-video-desktop-sample-macOS"
+          apple_connect_email: ${{ secrets.APPLE_CONNECT_EMAIL }}
+          apple_developer_email: ${{ secrets.APPLE_DEVELOPER_EMAIL }}
+          apple_team_id: ${{ secrets.APPLE_TEAM_ID }}
+          match_repository: ${{ secrets.MATCH_REPOSITORY }}
+          match_password: ${{ secrets.MATCH_PASSWORD }}
+          match_deploy_key: ${{ secrets.MATCH_DEPLOY_KEY }}
+          appstore_issuer_id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          appstore_key_id: ${{ secrets.APPSTORE_KEY_ID }}
+          appstore_p8: ${{ secrets.APPSTORE_P8 }}
 
       - name: Manage Deployment
         uses: starburst997/deployment-actions@v1
