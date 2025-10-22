@@ -34,6 +34,12 @@ jobs:
         with:
           git-push: false
 
+      - name: Setup Node.js (root)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
       - name: Setup Ruby
         uses: starburst997/setup-ruby@jd
         with:
@@ -46,15 +52,41 @@ jobs:
           cd sample
           bundle install
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: sample/package-lock.json
+
       - name: Install npm Dependencies
         run: |
           cd sample
-          npm install
+          npm ci
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            sample/macos/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('sample/macos/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
 
       - name: Install CocoaPods Dependencies
         run: |
           cd sample/macos
           pod install
+
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-${{ hashFiles('sample/macos/**/*.xcodeproj/project.pbxproj', 'sample/macos/**/*.xcworkspace/contents.xcworkspacedata', 'sample/macos/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-
 
       - name: Build Sample App
         env:
