@@ -7,12 +7,19 @@ jobs:
   apple-setup:
     runs-on: ubuntu-latest
     steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
       - name: Setup Apple Code Signing
         uses: starburst997/apple-setup@v1
         with:
           generate_macos: true
           generate_developer_id: true
-          gh_pat: ${{ secrets.GH_PAT }}
+          gh_pat: ${{ steps.bot.outputs.token }}
           match_repository: ${{ secrets.MATCH_REPOSITORY }}
           match_password: ${{ secrets.MATCH_PASSWORD }}
           match_deploy_key: ${{ secrets.MATCH_DEPLOY_KEY }}
