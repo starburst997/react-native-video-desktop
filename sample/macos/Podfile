@@ -20,5 +20,12 @@ target 'react-native-video-desktop-sample-macOS' do
 
   post_install do |installer|
     react_native_post_install(installer)
+
+    # Enable Hardened Runtime for all targets (required for notarization)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['ENABLE_HARDENED_RUNTIME'] = 'YES'
+      end
+    end
   end
 end
