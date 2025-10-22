@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: write
+  deployments: write
+
 jobs:
   build-macos:
     name: Build macOS Sample App
@@ -22,7 +27,6 @@ jobs:
           scheme: "react-native-video-desktop-sample-macOS"
           output_name: "react-native-video-desktop-sample"
           mac_bundle_id: "jd.boiv.in.react-native-video-desktop-sample"
-          build_signed: ${{ secrets.MATCH_REPOSITORY != '' }}
           apple_connect_email: ${{ secrets.APPLE_CONNECT_EMAIL }}
           apple_developer_email: ${{ secrets.APPLE_DEVELOPER_EMAIL }}
           apple_team_id: ${{ secrets.APPLE_TEAM_ID }}
@@ -44,10 +48,6 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     needs: build-macos
-    permissions:
-      id-token: write
-      contents: write
-      deployments: write
     steps:
       - name: Initialize custom bot
         id: bot
