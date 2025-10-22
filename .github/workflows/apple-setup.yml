@@ -1,0 +1,20 @@
+name: Apple Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  apple-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Apple Code Signing
+        uses: starburst997/apple-setup@v1
+        with:
+          generate_ios: true
+          gh_pat: ${{ secrets.GH_PAT }}
+          match_repository: "your-org/certificates-repo"
+          match_password: ${{ secrets.MATCH_PASSWORD }}
+          appstore_issuer_id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          appstore_key_id: ${{ secrets.APPSTORE_KEY_ID }}
+          appstore_p8: ${{ secrets.APPSTORE_P8 }}
+          ios_bundle_id: "com.company.appname"
