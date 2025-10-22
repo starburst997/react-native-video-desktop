@@ -27,8 +27,6 @@ jobs:
           output_name: "react-native-video-desktop-sample"
           mac_bundle_id: "jd.boiv.in.react-native-video-desktop-sample"
           build_signed: ${{ secrets.MATCH_REPOSITORY != '' }}
-          create_zip: true
-          zip_name: "react-native-video-desktop-sample-macOS"
           apple_connect_email: ${{ secrets.APPLE_CONNECT_EMAIL }}
           apple_developer_email: ${{ secrets.APPLE_DEVELOPER_EMAIL }}
           apple_team_id: ${{ secrets.APPLE_TEAM_ID }}
