@@ -3,6 +3,11 @@ name: Test Release (Debug)
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: write
+  deployments: write
+
 jobs:
   # Simulate the build-macos job by downloading artifacts from a previous run
   download-build:
@@ -29,10 +34,6 @@ jobs:
     name: Test Release
     runs-on: ubuntu-latest
     needs: download-build
-    permissions:
-      id-token: write
-      contents: write
-      deployments: write
     steps:
       - name: Initialize custom bot
         id: bot
