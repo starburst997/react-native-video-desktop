@@ -20,4 +20,3 @@ jobs:
           appstore_key_id: ${{ secrets.APPSTORE_KEY_ID }}
           appstore_p8: ${{ secrets.APPSTORE_P8 }}
           mac_bundle_id: "jd.boiv.in.react-native-video-desktop-sample"
-          match_readonly: true
