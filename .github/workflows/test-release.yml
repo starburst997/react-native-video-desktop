@@ -10,30 +10,30 @@ permissions:
 
 jobs:
   # Simulate the build-macos job by downloading artifacts from a previous run
-  download-build:
-    name: Download Build Artifacts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts from previous run
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: release.yml
-          run_id: 18707128928
-          name: macos-sample
-          path: sample/dist
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload downloaded artifacts (simulate build output)
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-sample
-          path: sample/dist/*.zip
-          if-no-files-found: warn
+  #download-build:
+  #  name: Download Build Artifacts
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Download artifacts from previous run
+  #      uses: dawidd6/action-download-artifact@v6
+  #      with:
+  #        workflow: release.yml
+  #        run_id: 18707128928
+  #        name: macos-sample
+  #        path: sample/dist
+  #        github_token: ${{ secrets.GITHUB_TOKEN }}
+  #
+  #    - name: Upload downloaded artifacts (simulate build output)
+  #      uses: actions/upload-artifact@v4
+  #      with:
+  #        name: macos-sample
+  #        path: sample/dist/*.zip
+  #        if-no-files-found: warn
 
   release:
     name: Test Release
     runs-on: ubuntu-latest
-    needs: download-build
+    #needs: download-build
     steps:
       - name: Initialize custom bot
         id: bot
@@ -65,11 +65,11 @@ jobs:
         with:
           version: ${{ steps.version.outputs.version }}
 
-      - name: Download macOS artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-sample
-          path: sample/dist
+      #- name: Download macOS artifacts
+      #  uses: actions/download-artifact@v4
+      #  with:
+      #    name: macos-sample
+      #    path: sample/dist
 
       - name: Generate changelog and create release
         uses: starburst997/commits-logs@v1
