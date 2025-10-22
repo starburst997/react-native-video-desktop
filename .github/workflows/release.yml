@@ -10,29 +10,12 @@ permissions:
   contents: read
 
 jobs:
-  release:
-    name: Build and Release
+  build-macos:
+    name: Build macOS Sample App
     runs-on: macos-latest
-    permissions: write-all
     steps:
-      - name: Initialize custom bot
-        id: bot
-        uses: starburst997/custom-bot-init@v1
-        with:
-          app-id: ${{ secrets.BOT_ID }}
-          private-key: ${{ secrets.BOT_KEY }}
-
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ steps.bot.outputs.token }}
-
-      - name: Tag Version
-        id: version
-        uses: starburst997/auto-version@v1
-        with:
-          git-push: false
 
       - name: Build Sample App
         uses: starburst997/build-macos@v1
@@ -55,6 +38,44 @@ jobs:
           appstore_issuer_id: ${{ secrets.APPSTORE_ISSUER_ID }}
           appstore_key_id: ${{ secrets.APPSTORE_KEY_ID }}
           appstore_p8: ${{ secrets.APPSTORE_P8 }}
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-sample
+          path: sample/dist/*.zip
+          if-no-files-found: warn
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build-macos
+    permissions: write-all
+    steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.bot.outputs.token }}
+
+      - name: Tag Version
+        id: version
+        uses: starburst997/auto-version@v1
+        with:
+          git-push: false
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-sample
+          path: sample/dist
 
       - name: Manage Deployment
         uses: starburst997/deployment-actions@v1
