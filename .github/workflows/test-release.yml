@@ -1,0 +1,79 @@
+name: Test Release (Debug)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # Simulate the build-macos job by downloading artifacts from a previous run
+  download-build:
+    name: Download Build Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts from previous run
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: release.yml
+          run_id: 18707128928
+          name: macos-sample
+          path: sample/dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload downloaded artifacts (simulate build output)
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-sample
+          path: sample/dist/*.zip
+          if-no-files-found: warn
+
+  release:
+    name: Test Release
+    runs-on: ubuntu-latest
+    needs: download-build
+    permissions:
+      id-token: write
+      contents: write
+      deployments: write
+    steps:
+      - name: Initialize custom bot
+        id: bot
+        uses: starburst997/custom-bot-init@v1
+        with:
+          app-id: ${{ secrets.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.bot.outputs.token }}
+
+      - name: Tag Version
+        id: version
+        uses: starburst997/auto-version@v1
+        with:
+          git-push: false
+
+      - name: Manage Deployment
+        uses: starburst997/deployment-actions@v1
+        with:
+          environment: npm
+          environment-url: https://www.npmjs.com/package/@jdboivin/react-native-video-desktop
+
+      - name: Publish NPM
+        uses: starburst997/npm-publish@v1
+        with:
+          version: ${{ steps.version.outputs.version }}
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-sample
+          path: sample/dist
+
+      - name: Generate changelog and create release
+        uses: starburst997/commits-logs@v1
+        with:
+          token: ${{ steps.bot.outputs.token }}
+          git-push: true
+          artifacts: |
+            sample/dist/*.zip
