@@ -25,14 +25,11 @@ platform :mac do
   desc "Build unsigned app for testing"
   lane :build_unsigned do
     build_mac_app(
-      project: "macos/react-native-video-desktop-sample.xcodeproj",
-      scheme: "react-native-video-desktop-sample-macOS",
-      configuration: "Release",
+      export_method: 'mac-application',
+      workspace: "macos/react-native-video-desktop-sample.xcworkspace",
       output_directory: "dist",
       output_name: "react-native-video-desktop-sample",
-      export_method: "mac-application",
-      codesigning_identity: "",
-      skip_codesign: true
+      scheme: "react-native-video-desktop-sample-macOS"
     )
   end
 
@@ -62,7 +59,7 @@ platform :mac do
 
     build_mac_app(
       export_method: 'developer-id',
-      project: "macos/react-native-video-desktop-sample.xcodeproj",
+      workspace: "macos/react-native-video-desktop-sample.xcworkspace",
       output_directory: "dist",
       output_name: "react-native-video-desktop-sample",
       scheme: "react-native-video-desktop-sample-macOS",
